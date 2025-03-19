@@ -99,6 +99,29 @@ function App() {
         setEditedCustomer({ ...editedCustomer, [field]: e.target.value });
     };
 
+    const handleAdditionalInfoChange = (field, value) => {
+        setEditedCustomer({
+            ...editedCustomer,
+            additionalInfo: {
+                ...editedCustomer.additionalInfo,
+                [field]: value
+            }
+        });
+    };
+
+    const handleRatingChange = (field, value) => {
+        const numValue = parseFloat(value);
+        if (numValue >= 0 && numValue <= 5) {
+            setEditedCustomer({
+                ...editedCustomer,
+                ratings: {
+                    ...editedCustomer.ratings,
+                    [field]: numValue
+                }
+            });
+        }
+    };
+
     const handleAddNote = () => {
         if (newNote.trim()) {
             const today = new Date();
@@ -399,11 +422,73 @@ function App() {
                 <div style={{ flex: 1, marginRight: '20px' }}>
                     <div className="section">
                         <h2>Customer Rating - {customer.ratings.friendliness} Stars</h2>
-                        <p>Friendliness: {customer.ratings.friendliness}</p>
-                        <p>Ease of Work: {customer.ratings.easeOfWork}</p>
-                        <p>Timeliness of Payment: {customer.ratings.timelinessOfPayment}</p>
-                        <p>Likelihood to Stay: {customer.ratings.likelihoodToStay}</p>
-                        <p>Trustworthiness: {customer.ratings.trustworthiness}</p>
+                        {editing ? (
+                            <>
+                                <div>
+                                    <label>Friendliness: </label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        max="5"
+                                        step="0.1"
+                                        value={editedCustomer.ratings.friendliness}
+                                        onChange={(e) => handleRatingChange('friendliness', e.target.value)}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Ease of Work: </label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        max="5"
+                                        step="0.1"
+                                        value={editedCustomer.ratings.easeOfWork}
+                                        onChange={(e) => handleRatingChange('easeOfWork', e.target.value)}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Timeliness of Payment: </label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        max="5"
+                                        step="0.1"
+                                        value={editedCustomer.ratings.timelinessOfPayment}
+                                        onChange={(e) => handleRatingChange('timelinessOfPayment', e.target.value)}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Likelihood to Stay: </label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        max="5"
+                                        step="0.1"
+                                        value={editedCustomer.ratings.likelihoodToStay}
+                                        onChange={(e) => handleRatingChange('likelihoodToStay', e.target.value)}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Trustworthiness: </label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        max="5"
+                                        step="0.1"
+                                        value={editedCustomer.ratings.trustworthiness}
+                                        onChange={(e) => handleRatingChange('trustworthiness', e.target.value)}
+                                    />
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <p>Friendliness: {customer.ratings.friendliness}</p>
+                                <p>Ease of Work: {customer.ratings.easeOfWork}</p>
+                                <p>Timeliness of Payment: {customer.ratings.timelinessOfPayment}</p>
+                                <p>Likelihood to Stay: {customer.ratings.likelihoodToStay}</p>
+                                <p>Trustworthiness: {customer.ratings.trustworthiness}</p>
+                            </>
+                        )}
                         <button className="update">UPDATE</button>
                     </div>
                 </div>
@@ -412,23 +497,48 @@ function App() {
                         <h2>Additional Info About This Customer</h2>
                         <div className="additional-info">
                             <label>
-                                <input type="checkbox" checked={customer.additionalInfo.requiresNotice} readOnly />
+                                <input
+                                    type="checkbox"
+                                    checked={editing ? editedCustomer.additionalInfo.requiresNotice : customer.additionalInfo.requiresNotice}
+                                    onChange={(e) => handleAdditionalInfoChange('requiresNotice', e.target.checked)}
+                                    disabled={!editing}
+                                />
                                 This customer requires notice before we come.
                             </label>
                             <label>
-                                <input type="checkbox" checked={customer.additionalInfo.hasPets} readOnly />
+                                <input
+                                    type="checkbox"
+                                    checked={editing ? editedCustomer.additionalInfo.hasPets : customer.additionalInfo.hasPets}
+                                    onChange={(e) => handleAdditionalInfoChange('hasPets', e.target.checked)}
+                                    disabled={!editing}
+                                />
                                 This customer has a dangerous dog(s).
                             </label>
                             <label>
-                                <input type="checkbox" checked={customer.additionalInfo.hasPool} readOnly />
+                                <input
+                                    type="checkbox"
+                                    checked={editing ? editedCustomer.additionalInfo.hasPool : customer.additionalInfo.hasPool}
+                                    onChange={(e) => handleAdditionalInfoChange('hasPool', e.target.checked)}
+                                    disabled={!editing}
+                                />
                                 This customer has a pool.
                             </label>
                             <label>
-                                <input type="checkbox" checked={customer.additionalInfo.hasWater} readOnly />
+                                <input
+                                    type="checkbox"
+                                    checked={editing ? editedCustomer.additionalInfo.hasWater : customer.additionalInfo.hasWater}
+                                    onChange={(e) => handleAdditionalInfoChange('hasWater', e.target.checked)}
+                                    disabled={!editing}
+                                />
                                 This customer has water on the property.
                             </label>
                             <label>
-                                <input type="checkbox" checked={customer.additionalInfo.leftReview} readOnly />
+                                <input
+                                    type="checkbox"
+                                    checked={editing ? editedCustomer.additionalInfo.leftReview : customer.additionalInfo.leftReview}
+                                    onChange={(e) => handleAdditionalInfoChange('leftReview', e.target.checked)}
+                                    disabled={!editing}
+                                />
                                 This customer has left a positive review.
                             </label>
                         </div>
