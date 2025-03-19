@@ -93,31 +93,34 @@ function App() {
         setEditing(!editing);
     };
 
-    const handleInputChange = (field, value) => {
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
         setEditedCustomer(prev => ({
             ...prev,
-            [field]: value
+            [name]: value
         }));
     };
 
-    const handleAdditionalInfoChange = (field) => {
+    const handleAdditionalInfoChange = (e) => {
+        const { name, checked } = e.target;
         setEditedCustomer(prev => ({
             ...prev,
             additionalInfo: {
                 ...prev.additionalInfo,
-                [field]: !prev.additionalInfo[field]
+                [name]: checked
             }
         }));
     };
 
-    const handleRatingChange = (field, value) => {
+    const handleRatingChange = (e) => {
+        const { name, value } = e.target;
         const numValue = parseFloat(value);
         if (numValue >= 0 && numValue <= 5) {
             setEditedCustomer(prev => ({
                 ...prev,
                 ratings: {
                     ...prev.ratings,
-                    [field]: numValue
+                    [name]: numValue
                 }
             }));
         }
@@ -206,7 +209,7 @@ function App() {
         <div className="container">
             {/* Header */}
             <div className="header">
-                <div>
+                <div className="nav-links">
                     <button>Home</button>
                     <button>Sales</button>
                     <button>Accounting</button>
@@ -235,9 +238,9 @@ function App() {
             {/* Customer Info */}
             <div className="customer-info">
                 <div className="customer-info-left">
-                    <button>RETURN TO CUSTOMERS</button>
+                    <button className="return-button">RETURN TO CUSTOMERS</button>
                     <img src="house.jpg" alt="House" />
-                    <button>CHANGE IMAGE</button>
+                    <button className="change-image-button">CHANGE IMAGE</button>
                 </div>
                 <div className="customer-info-center">
                     {editing ? (
@@ -245,15 +248,17 @@ function App() {
                             <div>
                                 <input
                                     type="text"
+                                    name="couponCode"
                                     value={editedCustomer.couponCode}
-                                    onChange={(e) => handleInputChange('couponCode', e.target.value)}
+                                    onChange={handleInputChange}
                                     placeholder="Coupon Code"
                                 />
                             </div>
                             <div>
                                 <select
+                                    name="acreage"
                                     value={editedCustomer.acreage}
-                                    onChange={(e) => handleInputChange('acreage', e.target.value)}
+                                    onChange={handleInputChange}
                                 >
                                     <option value="Under .5 Acre">Under .5 Acre</option>
                                     <option value=".5 – 1 Acre">.5 – 1 Acre</option>
@@ -267,16 +272,18 @@ function App() {
                             <div>
                                 <input
                                     type="text"
+                                    name="firstName"
                                     value={editedCustomer.firstName}
-                                    onChange={(e) => handleInputChange('firstName', e.target.value)}
+                                    onChange={handleInputChange}
                                     placeholder="First Name"
                                 />
                             </div>
                             <div>
                                 <input
                                     type="text"
+                                    name="email"
                                     value={editedCustomer.email}
-                                    onChange={(e) => handleInputChange('email', e.target.value)}
+                                    onChange={handleInputChange}
                                     placeholder="Email"
                                 />
                             </div>
@@ -284,16 +291,18 @@ function App() {
                             <div>
                                 <input
                                     type="text"
+                                    name="lastName"
                                     value={editedCustomer.lastName}
-                                    onChange={(e) => handleInputChange('lastName', e.target.value)}
+                                    onChange={handleInputChange}
                                     placeholder="Last Name"
                                 />
                             </div>
                             <div>
                                 <input
                                     type="text"
+                                    name="phone"
                                     value={editedCustomer.phone}
-                                    onChange={(e) => handleInputChange('phone', e.target.value)}
+                                    onChange={handleInputChange}
                                     placeholder="Phone"
                                 />
                             </div>
@@ -301,8 +310,9 @@ function App() {
                             <div>
                                 <input
                                     type="text"
+                                    name="streetAddress"
                                     value={editedCustomer.streetAddress}
-                                    onChange={(e) => handleInputChange('streetAddress', e.target.value)}
+                                    onChange={handleInputChange}
                                     placeholder="Street Address"
                                 />
                             </div>
@@ -315,7 +325,7 @@ function App() {
                                             name="pets"
                                             value="No Pets"
                                             checked={editedCustomer.pets === "No Pets"}
-                                            onChange={(e) => handleInputChange('pets', e.target.value)}
+                                            onChange={handleInputChange}
                                         />
                                         No Pets
                                     </label>
@@ -325,7 +335,7 @@ function App() {
                                             name="pets"
                                             value="Dog"
                                             checked={editedCustomer.pets === "Dog"}
-                                            onChange={(e) => handleInputChange('pets', e.target.value)}
+                                            onChange={handleInputChange}
                                         />
                                         Dog
                                     </label>
@@ -335,7 +345,7 @@ function App() {
                                             name="pets"
                                             value="Cat"
                                             checked={editedCustomer.pets === "Cat"}
-                                            onChange={(e) => handleInputChange('pets', e.target.value)}
+                                            onChange={handleInputChange}
                                         />
                                         Cat
                                     </label>
@@ -345,7 +355,7 @@ function App() {
                                             name="pets"
                                             value="Dog & Cat"
                                             checked={editedCustomer.pets === "Dog & Cat"}
-                                            onChange={(e) => handleInputChange('pets', e.target.value)}
+                                            onChange={handleInputChange}
                                         />
                                         Dog & Cat
                                     </label>
@@ -354,15 +364,17 @@ function App() {
                             <div>
                                 <input
                                     type="text"
+                                    name="town"
                                     value={editedCustomer.town}
-                                    onChange={(e) => handleInputChange('town', e.target.value)}
+                                    onChange={handleInputChange}
                                     placeholder="City/Town"
                                 />
                             </div>
                             <div>
                                 <select
+                                    name="advertising"
                                     value={editedCustomer.advertising}
-                                    onChange={(e) => handleInputChange('advertising', e.target.value)}
+                                    onChange={handleInputChange}
                                 >
                                     <option value="Facebook">Facebook</option>
                                     <option value="Direct Mail">Direct Mail</option>
@@ -379,15 +391,17 @@ function App() {
                             <div>
                                 <input
                                     type="text"
+                                    name="zip"
                                     value={editedCustomer.zip}
-                                    onChange={(e) => handleInputChange('zip', e.target.value)}
+                                    onChange={handleInputChange}
                                     placeholder="Zip"
                                 />
                             </div>
                             <div style={{ gridColumn: 'span 2' }}>
                                 <textarea
+                                    name="comments"
                                     value={editedCustomer.comments}
-                                    onChange={(e) => handleInputChange('comments', e.target.value)}
+                                    onChange={handleInputChange}
                                     placeholder="Questions/Comments/Special Requests"
                                     style={{ width: '100%', height: '60px', resize: 'none' }}
                                 />
@@ -432,65 +446,70 @@ function App() {
             </div>
 
             {/* Customer Rating and Additional Info */}
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div style={{ flex: 1, marginRight: '20px' }}>
+            <div className="customer-rating-info">
+                <div className="customer-rating">
                     <div className="section">
                         <h2>Customer Rating - {customer.ratings.friendliness} Stars</h2>
                         {editing ? (
                             <>
-                                <div>
+                                <div className="rating-item">
                                     <label>Friendliness: </label>
                                     <input
                                         type="number"
+                                        name="friendliness"
                                         min="0"
                                         max="5"
                                         step="0.1"
                                         value={editedCustomer.ratings.friendliness}
-                                        onChange={(e) => handleRatingChange('friendliness', e.target.value)}
+                                        onChange={handleRatingChange}
                                     />
                                 </div>
-                                <div>
+                                <div className="rating-item">
                                     <label>Ease of Work: </label>
                                     <input
                                         type="number"
+                                        name="easeOfWork"
                                         min="0"
                                         max="5"
                                         step="0.1"
                                         value={editedCustomer.ratings.easeOfWork}
-                                        onChange={(e) => handleRatingChange('easeOfWork', e.target.value)}
+                                        onChange={handleRatingChange}
                                     />
                                 </div>
-                                <div>
+                                <div className="rating-item">
                                     <label>Timeliness of Payment: </label>
                                     <input
                                         type="number"
+                                        name="timelinessOfPayment"
                                         min="0"
                                         max="5"
                                         step="0.1"
                                         value={editedCustomer.ratings.timelinessOfPayment}
-                                        onChange={(e) => handleRatingChange('timelinessOfPayment', e.target.value)}
+                                        onChange={handleRatingChange}
                                     />
                                 </div>
-                                <div>
+                                <div className="rating-item">
                                     <label>Likelihood to Stay: </label>
                                     <input
                                         type="number"
+                                        name="likelihoodToStay"
                                         min="0"
                                         max="5"
                                         step="0.1"
                                         value={editedCustomer.ratings.likelihoodToStay}
-                                        onChange={(e) => handleRatingChange('likelihoodToStay', e.target.value)}
+                                        onChange={handleRatingChange}
                                     />
                                 </div>
-                                <div>
+                                <div className="rating-item">
                                     <label>Trustworthiness: </label>
                                     <input
                                         type="number"
+                                        name="trustworthiness"
                                         min="0"
                                         max="5"
                                         step="0.1"
                                         value={editedCustomer.ratings.trustworthiness}
-                                        onChange={(e) => handleRatingChange('trustworthiness', e.target.value)}
+                                        onChange={handleRatingChange}
                                     />
                                 </div>
                             </>
@@ -506,15 +525,16 @@ function App() {
                         <button className="update">UPDATE</button>
                     </div>
                 </div>
-                <div style={{ flex: 1 }}>
+                <div className="additional-info-section">
                     <div className="section">
                         <h2>Additional Info About This Customer</h2>
                         <div className="additional-info">
                             <label>
                                 <input
                                     type="checkbox"
+                                    name="requiresNotice"
                                     checked={editing ? editedCustomer.additionalInfo.requiresNotice : customer.additionalInfo.requiresNotice}
-                                    onChange={() => handleAdditionalInfoChange('requiresNotice')}
+                                    onChange={handleAdditionalInfoChange}
                                     disabled={!editing}
                                 />
                                 This customer requires notice before we come.
@@ -522,8 +542,9 @@ function App() {
                             <label>
                                 <input
                                     type="checkbox"
+                                    name="hasPets"
                                     checked={editing ? editedCustomer.additionalInfo.hasPets : customer.additionalInfo.hasPets}
-                                    onChange={() => handleAdditionalInfoChange('hasPets')}
+                                    onChange={handleAdditionalInfoChange}
                                     disabled={!editing}
                                 />
                                 This customer has a dangerous dog(s).
@@ -531,8 +552,9 @@ function App() {
                             <label>
                                 <input
                                     type="checkbox"
+                                    name="hasPool"
                                     checked={editing ? editedCustomer.additionalInfo.hasPool : customer.additionalInfo.hasPool}
-                                    onChange={() => handleAdditionalInfoChange('hasPool')}
+                                    onChange={handleAdditionalInfoChange}
                                     disabled={!editing}
                                 />
                                 This customer has a pool.
@@ -540,8 +562,9 @@ function App() {
                             <label>
                                 <input
                                     type="checkbox"
+                                    name="hasWater"
                                     checked={editing ? editedCustomer.additionalInfo.hasWater : customer.additionalInfo.hasWater}
-                                    onChange={() => handleAdditionalInfoChange('hasWater')}
+                                    onChange={handleAdditionalInfoChange}
                                     disabled={!editing}
                                 />
                                 This customer has water on the property.
@@ -549,8 +572,9 @@ function App() {
                             <label>
                                 <input
                                     type="checkbox"
+                                    name="leftReview"
                                     checked={editing ? editedCustomer.additionalInfo.leftReview : customer.additionalInfo.leftReview}
-                                    onChange={() => handleAdditionalInfoChange('leftReview')}
+                                    onChange={handleAdditionalInfoChange}
                                     disabled={!editing}
                                 />
                                 This customer has left a positive review.
@@ -562,8 +586,8 @@ function App() {
             </div>
 
             {/* Sidebar: Scheduled Start Date and Contract */}
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div style={{ flex: 3, marginRight: '20px' }}>
+            <div className="main-content">
+                <div className="content-sections">
                     {/* Internal Notes */}
                     <div className="section">
                         <h2>Internal Notes</h2>
@@ -818,10 +842,14 @@ function App() {
                     </div>
                 </div>
                 <div className="sidebar">
-                    <h2>Scheduled Start Date</h2>
-                    <p>{customer.startDate}</p>
-                    <h2>Contract</h2>
-                    <button className="view-contract">VIEW CONTRACT</button>
+                    <div className="section">
+                        <h2>Scheduled Start Date</h2>
+                        <p>{customer.startDate}</p>
+                    </div>
+                    <div className="section">
+                        <h2>Contract</h2>
+                        <button className="view-contract">VIEW CONTRACT</button>
+                    </div>
                 </div>
             </div>
         </div>
