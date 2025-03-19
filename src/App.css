@@ -11,7 +11,7 @@ body {
 }
 
 .header {
-    background-color: #1b5e20;
+    background-color: #21502e;
     color: white;
     padding: 10px 20px;
     display: flex;
@@ -20,14 +20,19 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.nav-links {
+    display: flex;
+    gap: 10px;
+}
+
 .header-title {
     font-size: 18px;
     font-weight: bold;
+    text-transform: uppercase;
 }
 
 .header button {
     color: white;
-    margin-right: 15px;
     background: none;
     border: none;
     cursor: pointer;
@@ -48,7 +53,7 @@ body {
 }
 
 .status-bar {
-    background-color: #fbc02d; /* Yellow for INACTIVE */
+    background-color: #d09c31;
     padding: 10px 20px;
     text-align: center;
     font-weight: bold;
@@ -59,7 +64,7 @@ body {
 }
 
 .status-bar.active {
-    background-color: #c8e6c9; /* Light green for ACTIVE */
+    background-color: #c1dbb6;
 }
 
 .status-bar img {
@@ -76,11 +81,13 @@ body {
     margin-top: 20px;
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
 }
 
 .customer-info-left {
     flex: 1;
     margin-right: 20px;
+    text-align: center;
 }
 
 .customer-info-left img {
@@ -105,9 +112,20 @@ body {
     font-size: 14px;
 }
 
+.customer-info-center input,
+.customer-info-center select,
+.customer-info-center textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
 .customer-info-right {
     flex: 1;
     margin-left: 20px;
+    text-align: center;
 }
 
 .customer-info-right img {
@@ -119,6 +137,36 @@ body {
 .customer-info-buttons {
     margin-top: 20px;
     text-align: center;
+}
+
+.customer-rating-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.customer-rating {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.additional-info-section {
+    flex: 1;
+}
+
+.rating-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.rating-item label {
+    margin-right: 10px;
+    width: 150px;
+}
+
+.rating-item input {
+    width: 60px;
 }
 
 .section {
@@ -139,7 +187,7 @@ h1 {
 h2 {
     font-size: 18px;
     margin-bottom: 15px;
-    color: #444;
+    color: #21502e;
     text-transform: uppercase;
 }
 
@@ -147,15 +195,6 @@ p {
     margin: 5px 0;
     color: #555;
     font-size: 14px;
-}
-
-a {
-    color: #1976d2;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
 }
 
 button {
@@ -169,13 +208,33 @@ button {
     transition: background-color 0.3s;
 }
 
+.return-button {
+    background-color: #579c37;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.return-button:hover {
+    background-color: #4d8a31;
+}
+
+.change-image-button {
+    background-color: #579c37;
+    color: white;
+    margin-top: 10px;
+}
+
+.change-image-button:hover {
+    background-color: #4d8a31;
+}
+
 button.google {
-    background-color: #f4b400;
+    background-color: #d09c31;
     color: white;
 }
 
 button.google:hover {
-    background-color: #e0a200;
+    background-color: #c18b2b;
 }
 
 button.status-inactive {
@@ -188,60 +247,60 @@ button.status-inactive:hover {
 }
 
 button.status-active {
-    background-color: #4caf50;
+    background-color: #579c37;
     color: white;
 }
 
 button.status-active:hover {
-    background-color: #45a049;
+    background-color: #4d8a31;
 }
 
 button.submit {
-    background-color: #4caf50;
+    background-color: #579c37;
     color: white;
 }
 
 button.submit:hover {
-    background-color: #45a049;
+    background-color: #4d8a31;
 }
 
 button.update {
-    background-color: #4caf50;
+    background-color: #579c37;
     color: white;
 }
 
 button.update:hover {
-    background-color: #45a049;
+    background-color: #4d8a31;
 }
 
 button.add {
-    background-color: #4caf50;
+    background-color: #579c37;
     color: white;
     padding: 5px 10px;
 }
 
 button.add:hover {
-    background-color: #45a049;
+    background-color: #4d8a31;
 }
 
 button.del {
-    background-color: #f44336;
+    background-color: #d11c1c;
     color: white;
     padding: 5px 10px;
 }
 
 button.del:hover {
-    background-color: #d32f2f;
+    background-color: #b71717;
 }
 
 button.view-contract {
-    background-color: #4caf50;
+    background-color: #579c37;
     color: white;
     padding: 8px 16px;
 }
 
 button.view-contract:hover {
-    background-color: #45a049;
+    background-color: #4d8a31;
 }
 
 table {
@@ -258,9 +317,9 @@ th, td {
 }
 
 th {
-    background-color: #e0e0e0;
+    background-color: #949495;
     font-weight: bold;
-    color: #333;
+    color: #484849;
     text-transform: uppercase;
 }
 
@@ -276,13 +335,15 @@ tr.paid {
     background-color: #e8f5e9;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="number"],
+select,
+textarea {
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 14px;
-    width: 300px;
-    margin-right: 10px;
+    width: 100%;
 }
 
 input[type="checkbox"] {
@@ -301,13 +362,24 @@ label {
     gap: 10px;
 }
 
-.sidebar {
+.main-content {
+    display: flex;
+    justify-content: space-between;
     margin-top: 30px;
-    padding: 15px;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.content-sections {
+    flex: 3;
+}
+
+.sidebar {
+    flex: 1;
+    margin-left: 20px;
+}
+
+.sidebar .section {
+    margin-top: 0;
+    margin-bottom: 20px;
 }
 
 .sidebar h2 {
