@@ -110,6 +110,7 @@ function App() {
                 <p>Phone: {customer.phone}</p>
                 <p>Email: {customer.email}</p>
                 <p>Payment Method: {customer.paymentMethod}</p>
+                <p>Start Date: {customer.startDate}</p>
                 <button style={{ marginRight: '10px' }}>GOOGLE</button>
                 <button style={{ marginRight: '10px' }}>{customer.status}</button>
                 <button>SUBMIT CHANGES</button>
@@ -190,8 +191,37 @@ function App() {
                     </tbody>
                 </table>
             </div>
-        </div>
-    );
-}
 
-export default App;
+            {/* Credit Card */}
+            <div style={{ marginTop: '20px', border: '1px solid #ccc', padding: '10px' }}>
+                <h2>Credit Card</h2>
+                <p>Date: {customer.creditCard.date}</p>
+                <p>Name on Card: {customer.creditCard.nameOnCard}</p>
+                <p>Card Number: {customer.creditCard.cardNumber}</p>
+                <p>Expiry: {customer.creditCard.expiry}</p>
+                <p>CVV: {customer.creditCard.cvv}</p>
+                <p>Zip: {customer.creditCard.zip}</p>
+                <label>
+                    <input type="checkbox" checked={customer.creditCard.useDebit} readOnly />
+                    Use Debit
+                </label><br />
+                <button>UPDATE</button>
+            </div>
+
+            {/* Operator Instructions */}
+            <div style={{ marginTop: '20px', border: '1px solid #ccc', padding: '10px' }}>
+                <h2>Operator Instructions</h2>
+                {customer.operatorInstructions.map((instruction, index) => (
+                    <p key={index}>{instruction}</p>
+                ))}
+                <input type="text" placeholder="Add an instruction..." style={{ width: '300px', marginRight: '10px' }} />
+                <button>ADD</button>
+            </div>
+
+            {/* Spray Log (Pesticide Usage) */}
+            <div style={{ marginTop: '20px', border: '1px solid #ccc', padding: '10px' }}>
+                <h2>Spray Log</h2>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                        <tr>
+                            <th style
