@@ -73,16 +73,16 @@ function App() {
             <div style={{ backgroundColor: '#2E7D32', color: 'white', padding: '10px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div>
-                        <a href="#" style={{ color: 'white', marginRight: '10px' }}>Home</a>
-                        <a href="#" style={{ color: 'white', marginRight: '10px' }}>Sales</a>
-                        <a href="#" style={{ color: 'white', marginRight: '10px' }}>Accounting</a>
-                        <a href="#" style={{ color: 'white', marginRight: '10px' }}>Schedule</a>
-                        <a href="#" style={{ color: 'white', marginRight: '10px' }}>Customers</a>
-                        <a href="#" style={{ color: 'white', marginRight: '10px' }}>Operators</a>
-                        <a href="#" style={{ color: 'white', marginRight: '10px' }}>Pesticides</a>
-                        <a href="#" style={{ color: 'white', marginRight: '10px' }}>Messaging</a>
-                        <a href="#" style={{ color: 'white', marginRight: '10px' }}>Trucks</a>
-                        <a href="#" style={{ color: 'white' }}>Reporting</a>
+                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Home</button>
+                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Sales</button>
+                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Accounting</button>
+                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Schedule</button>
+                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Customers</button>
+                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Operators</button>
+                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Pesticides</button>
+                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Messaging</button>
+                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Trucks</button>
+                        <button style={{ color: 'white', background: 'none', border: 'none', cursor: 'pointer' }}>Reporting</button>
                     </div>
                     <div>
                         <input type="text" placeholder="Search..." style={{ padding: '5px' }} />
