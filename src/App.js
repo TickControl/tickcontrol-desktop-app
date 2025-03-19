@@ -88,23 +88,24 @@ function App() {
 
     const handleEditToggle = () => {
         if (editing) {
-            setCustomer({ ...editedCustomer });
-        } else {
-            setEditedCustomer({ ...customer });
+            setCustomer(editedCustomer);
         }
         setEditing(!editing);
     };
 
     const handleInputChange = (field, value) => {
-        setEditedCustomer(prev => ({ ...prev, [field]: value }));
+        setEditedCustomer(prev => ({
+            ...prev,
+            [field]: value
+        }));
     };
 
-    const handleAdditionalInfoChange = (field, value) => {
+    const handleAdditionalInfoChange = (field) => {
         setEditedCustomer(prev => ({
             ...prev,
             additionalInfo: {
                 ...prev.additionalInfo,
-                [field]: value
+                [field]: !prev.additionalInfo[field]
             }
         }));
     };
@@ -513,7 +514,7 @@ function App() {
                                 <input
                                     type="checkbox"
                                     checked={editing ? editedCustomer.additionalInfo.requiresNotice : customer.additionalInfo.requiresNotice}
-                                    onChange={(e) => handleAdditionalInfoChange('requiresNotice', e.target.checked)}
+                                    onChange={() => handleAdditionalInfoChange('requiresNotice')}
                                     disabled={!editing}
                                 />
                                 This customer requires notice before we come.
@@ -522,7 +523,7 @@ function App() {
                                 <input
                                     type="checkbox"
                                     checked={editing ? editedCustomer.additionalInfo.hasPets : customer.additionalInfo.hasPets}
-                                    onChange={(e) => handleAdditionalInfoChange('hasPets', e.target.checked)}
+                                    onChange={() => handleAdditionalInfoChange('hasPets')}
                                     disabled={!editing}
                                 />
                                 This customer has a dangerous dog(s).
@@ -531,7 +532,7 @@ function App() {
                                 <input
                                     type="checkbox"
                                     checked={editing ? editedCustomer.additionalInfo.hasPool : customer.additionalInfo.hasPool}
-                                    onChange={(e) => handleAdditionalInfoChange('hasPool', e.target.checked)}
+                                    onChange={() => handleAdditionalInfoChange('hasPool')}
                                     disabled={!editing}
                                 />
                                 This customer has a pool.
@@ -540,7 +541,7 @@ function App() {
                                 <input
                                     type="checkbox"
                                     checked={editing ? editedCustomer.additionalInfo.hasWater : customer.additionalInfo.hasWater}
-                                    onChange={(e) => handleAdditionalInfoChange('hasWater', e.target.checked)}
+                                    onChange={() => handleAdditionalInfoChange('hasWater')}
                                     disabled={!editing}
                                 />
                                 This customer has water on the property.
@@ -549,7 +550,7 @@ function App() {
                                 <input
                                     type="checkbox"
                                     checked={editing ? editedCustomer.additionalInfo.leftReview : customer.additionalInfo.leftReview}
-                                    onChange={(e) => handleAdditionalInfoChange('leftReview', e.target.checked)}
+                                    onChange={() => handleAdditionalInfoChange('leftReview')}
                                     disabled={!editing}
                                 />
                                 This customer has left a positive review.
@@ -809,7 +810,7 @@ function App() {
                                         <td>{spray.gallons}</td>
                                         <td>{spray.milliliters}</td>
                                         <td>{spray.squareFeet}</td>
-                                        <td><a href="#">MORE</a></td>
+                                        <td><button onClick={() => alert("Load more entries (placeholder)")}>MORE</button></td>
                                     </tr>
                                 ))}
                             </tbody>
