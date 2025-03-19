@@ -95,8 +95,8 @@ function App() {
         setEditing(!editing);
     };
 
-    const handleInputChange = (e, field) => {
-        setEditedCustomer({ ...editedCustomer, [field]: e.target.value });
+    const handleInputChange = (field, value) => {
+        setEditedCustomer({ ...editedCustomer, [field]: value });
     };
 
     const handleAdditionalInfoChange = (field, value) => {
@@ -120,6 +120,19 @@ function App() {
                 }
             });
         }
+    };
+
+    const handleCreditCardExpiryChange = (value) => {
+        // Remove non-numeric characters except for the slash
+        let cleanedValue = value.replace(/[^0-9/]/g, '');
+        // Ensure the format is XX/XX
+        if (cleanedValue.length > 2 && cleanedValue[2] !== '/') {
+            cleanedValue = cleanedValue.slice(0, 2) + '/' + cleanedValue.slice(2);
+        }
+        if (cleanedValue.length > 5) {
+            cleanedValue = cleanedValue.slice(0, 5);
+        }
+        setNewCreditCard({ ...newCreditCard, expiry: cleanedValue });
     };
 
     const handleAddNote = () => {
@@ -232,14 +245,14 @@ function App() {
                                 <input
                                     type="text"
                                     value={editedCustomer.couponCode}
-                                    onChange={(e) => handleInputChange(e, 'couponCode')}
+                                    onChange={(e) => handleInputChange('couponCode', e.target.value)}
                                     placeholder="Coupon Code"
                                 />
                             </div>
                             <div>
                                 <select
                                     value={editedCustomer.acreage}
-                                    onChange={(e) => handleInputChange(e, 'acreage')}
+                                    onChange={(e) => handleInputChange('acreage', e.target.value)}
                                 >
                                     <option value="Under .5 Acre">Under .5 Acre</option>
                                     <option value=".5 – 1 Acre">.5 – 1 Acre</option>
@@ -254,7 +267,7 @@ function App() {
                                 <input
                                     type="text"
                                     value={editedCustomer.firstName}
-                                    onChange={(e) => handleInputChange(e, 'firstName')}
+                                    onChange={(e) => handleInputChange('firstName', e.target.value)}
                                     placeholder="First Name"
                                 />
                             </div>
@@ -262,7 +275,7 @@ function App() {
                                 <input
                                     type="text"
                                     value={editedCustomer.email}
-                                    onChange={(e) => handleInputChange(e, 'email')}
+                                    onChange={(e) => handleInputChange('email', e.target.value)}
                                     placeholder="Email"
                                 />
                             </div>
@@ -271,7 +284,7 @@ function App() {
                                 <input
                                     type="text"
                                     value={editedCustomer.lastName}
-                                    onChange={(e) => handleInputChange(e, 'lastName')}
+                                    onChange={(e) => handleInputChange('lastName', e.target.value)}
                                     placeholder="Last Name"
                                 />
                             </div>
@@ -279,7 +292,7 @@ function App() {
                                 <input
                                     type="text"
                                     value={editedCustomer.phone}
-                                    onChange={(e) => handleInputChange(e, 'phone')}
+                                    onChange={(e) => handleInputChange('phone', e.target.value)}
                                     placeholder="Phone"
                                 />
                             </div>
@@ -288,7 +301,7 @@ function App() {
                                 <input
                                     type="text"
                                     value={editedCustomer.streetAddress}
-                                    onChange={(e) => handleInputChange(e, 'streetAddress')}
+                                    onChange={(e) => handleInputChange('streetAddress', e.target.value)}
                                     placeholder="Street Address"
                                 />
                             </div>
@@ -301,7 +314,7 @@ function App() {
                                             name="pets"
                                             value="No Pets"
                                             checked={editedCustomer.pets === "No Pets"}
-                                            onChange={(e) => handleInputChange(e, 'pets')}
+                                            onChange={(e) => handleInputChange('pets', e.target.value)}
                                         />
                                         No Pets
                                     </label>
@@ -311,7 +324,7 @@ function App() {
                                             name="pets"
                                             value="Dog"
                                             checked={editedCustomer.pets === "Dog"}
-                                            onChange={(e) => handleInputChange(e, 'pets')}
+                                            onChange={(e) => handleInputChange('pets', e.target.value)}
                                         />
                                         Dog
                                     </label>
@@ -321,7 +334,7 @@ function App() {
                                             name="pets"
                                             value="Cat"
                                             checked={editedCustomer.pets === "Cat"}
-                                            onChange={(e) => handleInputChange(e, 'pets')}
+                                            onChange={(e) => handleInputChange('pets', e.target.value)}
                                         />
                                         Cat
                                     </label>
@@ -331,7 +344,7 @@ function App() {
                                             name="pets"
                                             value="Dog & Cat"
                                             checked={editedCustomer.pets === "Dog & Cat"}
-                                            onChange={(e) => handleInputChange(e, 'pets')}
+                                            onChange={(e) => handleInputChange('pets', e.target.value)}
                                         />
                                         Dog & Cat
                                     </label>
@@ -341,14 +354,14 @@ function App() {
                                 <input
                                     type="text"
                                     value={editedCustomer.town}
-                                    onChange={(e) => handleInputChange(e, 'town')}
+                                    onChange={(e) => handleInputChange('town', e.target.value)}
                                     placeholder="City/Town"
                                 />
                             </div>
                             <div>
                                 <select
                                     value={editedCustomer.advertising}
-                                    onChange={(e) => handleInputChange(e, 'advertising')}
+                                    onChange={(e) => handleInputChange('advertising', e.target.value)}
                                 >
                                     <option value="Facebook">Facebook</option>
                                     <option value="Direct Mail">Direct Mail</option>
@@ -366,14 +379,14 @@ function App() {
                                 <input
                                     type="text"
                                     value={editedCustomer.zip}
-                                    onChange={(e) => handleInputChange(e, 'zip')}
+                                    onChange={(e) => handleInputChange('zip', e.target.value)}
                                     placeholder="Zip"
                                 />
                             </div>
                             <div style={{ gridColumn: 'span 2' }}>
                                 <textarea
                                     value={editedCustomer.comments}
-                                    onChange={(e) => handleInputChange(e, 'comments')}
+                                    onChange={(e) => handleInputChange('comments', e.target.value)}
                                     placeholder="Questions/Comments/Special Requests"
                                     style={{ width: '100%', height: '60px', resize: 'none' }}
                                 />
@@ -687,7 +700,7 @@ function App() {
                                         <input
                                             type="text"
                                             value={newCreditCard.expiry}
-                                            onChange={(e) => setNewCreditCard({ ...newCreditCard, expiry: e.target.value })}
+                                            onChange={(e) => handleCreditCardExpiryChange(e.target.value)}
                                             placeholder="MM/YY"
                                             style={{ width: '50px' }}
                                         />
