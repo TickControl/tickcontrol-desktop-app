@@ -224,4 +224,42 @@ function App() {
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                     <thead>
                         <tr>
-                            <th style
+                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Date</th>
+                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Time</th>
+                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Operator</th>
+                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Type</th>
+                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Test</th>
+                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Pesticide</th>
+                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>EPA</th>
+                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Precautionary</th>
+                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Concentration</th>
+                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Gallons</th>
+                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Milliliters</th>
+                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Square Feet</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {customer.sprayLog.map((spray, index) => (
+                            <tr key={index}>
+                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.date}</td>
+                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.time}</td>
+                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.operator}</td>
+                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.type}</td>
+                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.test}</td>
+                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.pesticide}</td>
+                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.epa}</td>
+                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.precautionary}</td>
+                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.concentration}</td>
+                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.gallons}</td>
+                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.milliliters}</td>
+                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.squareFeet}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+}
+
+export default App;
