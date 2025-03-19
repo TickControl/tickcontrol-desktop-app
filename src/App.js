@@ -4,15 +4,21 @@ import './App.css';
 function App() {
     // Mock data for now (we'll connect to the backend later)
     const [customer, setCustomer] = useState({
-        name: "Joe Smith",
+        firstName: "Joe",
+        lastName: "Smith",
         status: "INACTIVE",
-        address: "1234 East Main Street, Greenwich, CT 06830",
-        sprayHistory: "This address was sprayed 4 times this year and has 0 open invoices",
-        balance: 127.72,
+        streetAddress: "1234 East Main Street",
+        town: "Greenwich",
+        zip: "06830",
         phone: "(203) 555-5555",
         email: "joesmith@gmail.com",
-        paymentMethod: "MONTHLY CREDIT CARD 1-15 DOG",
-        acres: "1-15 ACRES",
+        couponCode: "",
+        acreage: "1 – 1.5 Acres",
+        pets: "Dog",
+        advertising: "A friend referred me",
+        comments: "",
+        sprayHistory: "This address was sprayed 4 times this year and has 0 open invoices",
+        balance: 127.72,
         ratings: {
             friendliness: 4.35,
             easeOfWork: 4.75,
@@ -202,29 +208,31 @@ function App() {
                             <div>
                                 <input
                                     type="text"
-                                    value={editedCustomer.name}
-                                    onChange={(e) => handleInputChange(e, 'name')}
+                                    value={editedCustomer.couponCode}
+                                    onChange={(e) => handleInputChange(e, 'couponCode')}
+                                    placeholder="Coupon Code"
                                 />
                             </div>
                             <div>
-                                <input
-                                    type="text"
-                                    value={editedCustomer.address}
-                                    onChange={(e) => handleInputChange(e, 'address')}
-                                />
+                                <select
+                                    value={editedCustomer.acreage}
+                                    onChange={(e) => handleInputChange(e, 'acreage')}
+                                >
+                                    <option value="Under .5 Acre">Under .5 Acre</option>
+                                    <option value=".5 – 1 Acre">.5 – 1 Acre</option>
+                                    <option value="1 – 1.5 Acres">1 – 1.5 Acres</option>
+                                    <option value="1.5 – 2 Acres">1.5 – 2 Acres</option>
+                                    <option value="2 – 2.5 Acres">2 – 2.5 Acres</option>
+                                    <option value="Over 3 Acres">Over 3 Acres</option>
+                                </select>
                             </div>
+                            <div></div>
                             <div>
                                 <input
                                     type="text"
-                                    value={editedCustomer.acres}
-                                    onChange={(e) => handleInputChange(e, 'acres')}
-                                />
-                            </div>
-                            <div>
-                                <input
-                                    type="text"
-                                    value={editedCustomer.phone}
-                                    onChange={(e) => handleInputChange(e, 'phone')}
+                                    value={editedCustomer.firstName}
+                                    onChange={(e) => handleInputChange(e, 'firstName')}
+                                    placeholder="First Name"
                                 />
                             </div>
                             <div>
@@ -232,24 +240,144 @@ function App() {
                                     type="text"
                                     value={editedCustomer.email}
                                     onChange={(e) => handleInputChange(e, 'email')}
+                                    placeholder="Email"
+                                />
+                            </div>
+                            <div></div>
+                            <div>
+                                <input
+                                    type="text"
+                                    value={editedCustomer.lastName}
+                                    onChange={(e) => handleInputChange(e, 'lastName')}
+                                    placeholder="Last Name"
                                 />
                             </div>
                             <div>
                                 <input
                                     type="text"
-                                    value={editedCustomer.paymentMethod}
-                                    onChange={(e) => handleInputChange(e, 'paymentMethod')}
+                                    value={editedCustomer.phone}
+                                    onChange={(e) => handleInputChange(e, 'phone')}
+                                    placeholder="Phone"
+                                />
+                            </div>
+                            <div></div>
+                            <div>
+                                <input
+                                    type="text"
+                                    value={editedCustomer.streetAddress}
+                                    onChange={(e) => handleInputChange(e, 'streetAddress')}
+                                    placeholder="Street Address"
+                                />
+                            </div>
+                            <div style={{ gridColumn: 'span 2' }}>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <label style={{ marginRight: '10px' }}>Pets:</label>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="pets"
+                                            value="No Pets"
+                                            checked={editedCustomer.pets === "No Pets"}
+                                            onChange={(e) => handleInputChange(e, 'pets')}
+                                        />
+                                        No Pets
+                                    </label>
+                                    <label style={{ marginLeft: '10px' }}>
+                                        <input
+                                            type="radio"
+                                            name="pets"
+                                            value="Dog"
+                                            checked={editedCustomer.pets === "Dog"}
+                                            onChange={(e) => handleInputChange(e, 'pets')}
+                                        />
+                                        Dog
+                                    </label>
+                                    <label style={{ marginLeft: '10px' }}>
+                                        <input
+                                            type="radio"
+                                            name="pets"
+                                            value="Cat"
+                                            checked={editedCustomer.pets === "Cat"}
+                                            onChange={(e) => handleInputChange(e, 'pets')}
+                                        />
+                                        Cat
+                                    </label>
+                                    <label style={{ marginLeft: '10px' }}>
+                                        <input
+                                            type="radio"
+                                            name="pets"
+                                            value="Dog & Cat"
+                                            checked={editedCustomer.pets === "Dog & Cat"}
+                                            onChange={(e) => handleInputChange(e, 'pets')}
+                                        />
+                                        Dog & Cat
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <input
+                                    type="text"
+                                    value={editedCustomer.town}
+                                    onChange={(e) => handleInputChange(e, 'town')}
+                                    placeholder="City/Town"
+                                />
+                            </div>
+                            <div>
+                                <select
+                                    value={editedCustomer.advertising}
+                                    onChange={(e) => handleInputChange(e, 'advertising')}
+                                >
+                                    <option value="Facebook">Facebook</option>
+                                    <option value="Direct Mail">Direct Mail</option>
+                                    <option value="Television">Television</option>
+                                    <option value="Lawn Sign">Lawn Sign</option>
+                                    <option value="Google Search">Google Search</option>
+                                    <option value="Internet Ads">Internet Ads</option>
+                                    <option value="Saw our truck">Saw our truck</option>
+                                    <option value="A friend referred me">A friend referred me</option>
+                                    <option value="Trade Show">Trade Show</option>
+                                </select>
+                            </div>
+                            <div></div>
+                            <div>
+                                <input
+                                    type="text"
+                                    value={editedCustomer.zip}
+                                    onChange={(e) => handleInputChange(e, 'zip')}
+                                    placeholder="Zip"
+                                />
+                            </div>
+                            <div style={{ gridColumn: 'span 2' }}>
+                                <textarea
+                                    value={editedCustomer.comments}
+                                    onChange={(e) => handleInputChange(e, 'comments')}
+                                    placeholder="Questions/Comments/Special Requests"
+                                    style={{ width: '100%', height: '60px', resize: 'none' }}
                                 />
                             </div>
                         </>
                     ) : (
                         <>
-                            <div>{customer.name}</div>
-                            <div>{customer.address}</div>
-                            <div>{customer.acres}</div>
-                            <div>{customer.phone}</div>
+                            <div>{customer.couponCode || "N/A"}</div>
+                            <div>{customer.acreage}</div>
+                            <div></div>
+                            <div>{customer.firstName}</div>
                             <div>{customer.email}</div>
-                            <div>{customer.paymentMethod}</div>
+                            <div></div>
+                            <div>{customer.lastName}</div>
+                            <div>{customer.phone}</div>
+                            <div></div>
+                            <div>{customer.streetAddress}</div>
+                            <div style={{ gridColumn: 'span 2' }}>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <label style={{ marginRight: '10px' }}>Pets: {customer.pets}</label>
+                                </div>
+                            </div>
+                            <div>{customer.town}</div>
+                            <div>{customer.advertising}</div>
+                            <div></div>
+                            <div>{customer.zip}</div>
+                            <div style={{ gridColumn: 'span 2' }}>{customer.comments || "N/A"}</div>
                         </>
                     )}
                 </div>
