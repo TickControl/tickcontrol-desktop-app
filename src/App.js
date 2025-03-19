@@ -12,6 +12,7 @@ function App() {
         phone: "(203) 555-5555",
         email: "joesmith@gmail.com",
         paymentMethod: "MONTHLY CREDIT CARD 1-15 DOG",
+        acres: "1-15 ACRES",
         ratings: {
             friendliness: 4.35,
             easeOfWork: 4.75,
@@ -23,61 +24,85 @@ function App() {
             freeResprays: true,
             hasPets: true,
             hasWater: true,
-            leftReview: true
+            leftReview: true,
+            requiresNotice: false,
+            hasPool: false
         },
         internalNotes: [
-            { date: "04/09/2024", operator: "Jacob", content: "Said they want it next week instead." },
-            { date: "04/09/2024", operator: "Hunter", content: "Dog was outside, we’ll try to return later." },
-            { date: "04/09/2024", operator: "Jeff", content: "Inquire about payment on invoice 12345. They said they will send a check ASAP." }
+            { date: "04/09/2024", time: "8:30", operator: "Jacob", collection: false, content: "Said they want it next week instead." },
+            { date: "04/09/2024", time: "10:35", operator: "Hunter", collection: false, content: "Dog was outside, we’ll try to return later." },
+            { date: "04/09/2024", time: "4:57", operator: "Jeff", collection: true, content: "Inquire about payment on invoice 12345. They said they will send a check ASAP." }
         ],
         paymentHistory: [
-            { date: "10/20/2024", sprayNumber: "12345", amount: 103.36, paymentMethod: "NA", paymentDate: "NOT YET", amountDue: 127.72, currentAge: 7 },
-            { date: "9/20/2024", sprayNumber: "12346", amount: 103.36, paymentMethod: "CHECK #000000", paymentDate: "10/20/2024", amountDue: 0, currentAge: 0 }
+            { date: "10/20/2024", invoiceNumber: "12345", amount: 103.36, paymentMethod: "NA", paymentDate: "NOT YET", balance: 127.72, age: 7 },
+            { date: "9/20/2024", invoiceNumber: "12346", amount: 103.36, paymentMethod: "CHECK #1000000", paymentDate: "10/20/2024", balance: 0, age: 0 }
         ],
-        creditCard: {
-            date: "04/09/2024",
-            nameOnCard: "JOE SMITH",
-            cardNumber: "**** **** **** 1234",
-            expiry: "10/25",
-            cvv: "477",
-            zip: "06811",
-            useDebit: true
-        },
+        creditCards: [
+            { use: true, date: "04/09/2024", nameOnCard: "JOE SMITH", cardNumber: "**** **** **** 1234", expiry: "10/25", cvv: "477", zip: "06811" }
+        ],
         operatorInstructions: [
-            "04/09/2024: Spray under the front porch.",
-            "04/09/2024: Spray full perimeter and especially under the big pine trees on the property line.",
-            "04/09/2024: This is a busy road with a shared driveway. Be mindful of pedestrians and watch out for neighbors entering the area."
+            { date: "04/09/2024", content: "Spray under the front porch." },
+            { date: "04/09/2024", content: "Spray full perimeter and especially under the big pine trees on the back property line." },
+            { date: "04/09/2024", content: "This is a busy road with a shared driveway. Be mindful of pedestrians on foot and neighbors entering the area." }
         ],
         sprayLog: [
             {
+                year: 2024,
                 date: "10/09/2024",
                 time: "10:30",
-                operator: "JEFF",
-                type: "FULL",
-                test: "HUNTER",
-                pesticide: "PERMANONE",
-                epa: "EPA 432-183",
+                operator: "HUNTER FLANAGAN PMCO 0058825",
+                supervisor: "DARREN BONAVENTURA S-6583",
+                type: "PERIMETER",
+                pest: "TICKS",
+                pesticide: "TEMPO SC ULTRA 240 ML",
+                epa: "EPA 432-1363",
                 precautionary: "CAUTION",
-                concentration: 0.05,
+                concentration: 0.075,
                 gallons: 133.6,
                 milliliters: 122.2,
                 squareFeet: 145000
             }
         ],
-        startDate: "09/24/2024"
+        startDate: "03/14/2024"
     });
 
+    const [editing, setEditing] = useState(false);
+    const [editedCustomer, setEditedCustomer] = useState({ ...customer });
     const [newNote, setNewNote] = useState('');
     const [newInstruction, setNewInstruction] = useState('');
+    const [newCreditCard, setNewCreditCard] = useState({
+        use: false,
+        date: "",
+        nameOnCard: "",
+        cardNumber: "",
+        expiry: "",
+        cvv: "",
+        zip: ""
+    });
+
+    const handleEditToggle = () => {
+        if (editing) {
+            setCustomer({ ...editedCustomer });
+        } else {
+            setEditedCustomer({ ...customer });
+        }
+        setEditing(!editing);
+    };
+
+    const handleInputChange = (e, field) => {
+        setEditedCustomer({ ...editedCustomer, [field]: e.target.value });
+    };
 
     const handleAddNote = () => {
         if (newNote.trim()) {
-            const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            const today = new Date();
+            const date = today.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            const time = today.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
             setCustomer({
                 ...customer,
                 internalNotes: [
                     ...customer.internalNotes,
-                    { date: today, operator: "Current User", content: newNote }
+                    { date, time, operator: "Current User", collection: newNote.toLowerCase().includes("inquire"), content: newNote }
                 ]
             });
             setNewNote('');
@@ -91,215 +116,461 @@ function App() {
                 ...customer,
                 operatorInstructions: [
                     ...customer.operatorInstructions,
-                    `${today}: ${newInstruction}`
+                    { date: today, content: newInstruction }
                 ]
             });
             setNewInstruction('');
         }
     };
 
+    const handleAddCreditCard = () => {
+        if (newCreditCard.nameOnCard && newCreditCard.cardNumber) {
+            const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            setCustomer({
+                ...customer,
+                creditCards: [
+                    ...customer.creditCards,
+                    { ...newCreditCard, date: today }
+                ]
+            });
+            setNewCreditCard({
+                use: false,
+                date: "",
+                nameOnCard: "",
+                cardNumber: "",
+                expiry: "",
+                cvv: "",
+                zip: ""
+            });
+        }
+    };
+
+    const handleDeleteCreditCard = (index) => {
+        setCustomer({
+            ...customer,
+            creditCards: customer.creditCards.filter((_, i) => i !== index)
+        });
+    };
+
+    const handleDeleteInstruction = (index) => {
+        setCustomer({
+            ...customer,
+            operatorInstructions: customer.operatorInstructions.filter((_, i) => i !== index)
+        });
+    };
+
     return (
-        <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+        <div className="container">
             {/* Header */}
-            <div style={{ backgroundColor: '#2E7D32', color: 'white', padding: '10px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <div>
-                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Home</button>
-                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Sales</button>
-                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Accounting</button>
-                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Schedule</button>
-                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Customers</button>
-                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Operators</button>
-                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Pesticides</button>
-                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Messaging</button>
-                        <button style={{ color: 'white', marginRight: '10px', background: 'none', border: 'none', cursor: 'pointer' }}>Trucks</button>
-                        <button style={{ color: 'white', background: 'none', border: 'none', cursor: 'pointer' }}>Reporting</button>
-                    </div>
-                    <div>
-                        <input type="text" placeholder="Search..." style={{ padding: '5px' }} />
-                    </div>
+            <div className="header">
+                <div>
+                    <button>Home</button>
+                    <button>Sales</button>
+                    <button>Accounting</button>
+                    <button>Schedule</button>
+                    <button>Customers</button>
+                    <button>Operators</button>
+                    <button>Pesticides</button>
+                    <button>Messaging</button>
+                    <button>Trucks</button>
+                    <button>Reporting</button>
+                </div>
+                <div className="header-title">TICK CONTROL, LLC | CUSTOMER PROFILE</div>
+                <div>
+                    <input type="text" placeholder="Search..." />
                 </div>
             </div>
 
             {/* Status Bar */}
-            <div style={{ backgroundColor: '#FBC02D', padding: '10px', textAlign: 'center' }}>
-                <span style={{ marginRight: '20px' }}>SPRAY DAY 10</span>
-                <span style={{ marginRight: '20px' }}>2 WORKDAYS LEFT IN MARCH</span>
-                <span>116 JOBS LEFT TO COMPLETE</span>
+            <div className={`status-bar ${customer.status === "ACTIVE" ? "active" : ""}`}>
+                <img src="logo.png" alt="Tick Control Logo" />
+                <span>SPRAY DAY 10</span>
+                <span>2 WORKDAYS LEFT IN MARCH</span>
+                <span>118 JOBS LEFT TO COMPLETE</span>
             </div>
 
             {/* Customer Info */}
-            <div style={{ marginTop: '20px' }}>
-                <h1>{customer.name} - {customer.status}</h1>
-                <p>
-                    <a href={`https://maps.google.com/?q=${customer.address}`} target="_blank" rel="noopener noreferrer">
-                        {customer.address}
-                    </a>
-                </p>
-                <p>{customer.sprayHistory}</p>
-                <p>The total balance is ${customer.balance.toFixed(2)}</p>
-                <p>Phone: {customer.phone}</p>
-                <p>Email: {customer.email}</p>
-                <p>Payment Method: {customer.paymentMethod}</p>
-                <p>Start Date: {customer.startDate}</p>
-                <button style={{ marginRight: '10px' }}>GOOGLE</button>
-                <button style={{ marginRight: '10px' }}>{customer.status}</button>
-                <button>SUBMIT CHANGES</button>
+            <div className="customer-info">
+                <div className="customer-info-left">
+                    <button>RETURN TO CUSTOMERS</button>
+                    <img src="house.jpg" alt="House" />
+                    <button>CHANGE IMAGE</button>
+                </div>
+                <div className="customer-info-center">
+                    {editing ? (
+                        <>
+                            <div>
+                                <input
+                                    type="text"
+                                    value={editedCustomer.name}
+                                    onChange={(e) => handleInputChange(e, 'name')}
+                                />
+                            </div>
+                            <div>
+                                <input
+                                    type="text"
+                                    value={editedCustomer.address}
+                                    onChange={(e) => handleInputChange(e, 'address')}
+                                />
+                            </div>
+                            <div>
+                                <input
+                                    type="text"
+                                    value={editedCustomer.acres}
+                                    onChange={(e) => handleInputChange(e, 'acres')}
+                                />
+                            </div>
+                            <div>
+                                <input
+                                    type="text"
+                                    value={editedCustomer.phone}
+                                    onChange={(e) => handleInputChange(e, 'phone')}
+                                />
+                            </div>
+                            <div>
+                                <input
+                                    type="text"
+                                    value={editedCustomer.email}
+                                    onChange={(e) => handleInputChange(e, 'email')}
+                                />
+                            </div>
+                            <div>
+                                <input
+                                    type="text"
+                                    value={editedCustomer.paymentMethod}
+                                    onChange={(e) => handleInputChange(e, 'paymentMethod')}
+                                />
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div>{customer.name}</div>
+                            <div>{customer.address}</div>
+                            <div>{customer.acres}</div>
+                            <div>{customer.phone}</div>
+                            <div>{customer.email}</div>
+                            <div>{customer.paymentMethod}</div>
+                        </>
+                    )}
+                </div>
+                <div className="customer-info-right">
+                    <img src="map.jpg" alt="Google Map" />
+                </div>
+            </div>
+            <div className="customer-info-buttons">
+                <p>{customer.sprayHistory}. The total balance is ${customer.balance.toFixed(2)}</p>
+                <button className="google">GOOGLE</button>
+                <button className={`status-${customer.status.toLowerCase()}`}>{customer.status}</button>
+                <button className="submit" onClick={handleEditToggle}>
+                    {editing ? "SUBMIT CHANGES" : "EDIT"}
+                </button>
             </div>
 
-            {/* Customer Rating */}
-            <div style={{ marginTop: '20px', border: '1px solid #ccc', padding: '10px' }}>
-                <h2>Customer Rating</h2>
-                <p>Friendliness: {customer.ratings.friendliness} stars</p>
-                <p>Ease of Work: {customer.ratings.easeOfWork}</p>
-                <p>Timeliness of Payment: {customer.ratings.timelinessOfPayment}</p>
-                <p>Likelihood to Stay: {customer.ratings.likelihoodToStay}</p>
-                <p>Trustworthiness: {customer.ratings.trustworthiness}</p>
-                <button>UPDATE</button>
+            {/* Customer Rating and Additional Info */}
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ flex: 1, marginRight: '20px' }}>
+                    <div className="section">
+                        <h2>Customer Rating - {customer.ratings.friendliness} Stars</h2>
+                        <p>Friendliness: {customer.ratings.friendliness}</p>
+                        <p>Ease of Work: {customer.ratings.easeOfWork}</p>
+                        <p>Timeliness of Payment: {customer.ratings.timelinessOfPayment}</p>
+                        <p>Likelihood to Stay: {customer.ratings.likelihoodToStay}</p>
+                        <p>Trustworthiness: {customer.ratings.trustworthiness}</p>
+                        <button className="update">UPDATE</button>
+                    </div>
+                </div>
+                <div style={{ flex: 1 }}>
+                    <div className="section">
+                        <h2>Additional Info About This Customer</h2>
+                        <div className="additional-info">
+                            <label>
+                                <input type="checkbox" checked={customer.additionalInfo.requiresNotice} readOnly />
+                                This customer requires notice before we come.
+                            </label>
+                            <label>
+                                <input type="checkbox" checked={customer.additionalInfo.hasPets} readOnly />
+                                This customer has a dangerous dog(s).
+                            </label>
+                            <label>
+                                <input type="checkbox" checked={customer.additionalInfo.hasPool} readOnly />
+                                This customer has a pool.
+                            </label>
+                            <label>
+                                <input type="checkbox" checked={customer.additionalInfo.hasWater} readOnly />
+                                This customer has water on the property.
+                            </label>
+                            <label>
+                                <input type="checkbox" checked={customer.additionalInfo.leftReview} readOnly />
+                                This customer has left a positive review.
+                            </label>
+                        </div>
+                        <button className="update">UPDATE</button>
+                    </div>
+                </div>
             </div>
 
-            {/* Additional Info */}
-            <div style={{ marginTop: '20px', border: '1px solid #ccc', padding: '10px' }}>
-                <h2>Additional Info About This Customer</h2>
-                <label>
-                    <input type="checkbox" checked={customer.additionalInfo.freeResprays} readOnly />
-                    The customer has free re-sprays
-                </label><br />
-                <label>
-                    <input type="checkbox" checked={customer.additionalInfo.hasPets} readOnly />
-                    The customer has pets (dogs)
-                </label><br />
-                <label>
-                    <input type="checkbox" checked={customer.additionalInfo.hasWater} readOnly />
-                    The customer has water on the property
-                </label><br />
-                <label>
-                    <input type="checkbox" checked={customer.additionalInfo.leftReview} readOnly />
-                    The customer has left a positive review
-                </label><br />
-                <button>UPDATE</button>
-            </div>
+            {/* Sidebar: Scheduled Start Date and Contract */}
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ flex: 3, marginRight: '20px' }}>
+                    {/* Internal Notes */}
+                    <div className="section">
+                        <h2>Internal Notes</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date Added</th>
+                                    <th>Time</th>
+                                    <th>Author</th>
+                                    <th>Collection</th>
+                                    <th>Note</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {customer.internalNotes.map((note, index) => (
+                                    <tr key={index} className={note.collection ? "unpaid" : ""}>
+                                        <td>{note.date}</td>
+                                        <td>{note.time}</td>
+                                        <td>{note.operator}</td>
+                                        <td>
+                                            <input type="checkbox" checked={note.collection} readOnly />
+                                        </td>
+                                        <td>{note.content}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <div style={{ marginTop: '10px' }}>
+                            <input
+                                type="text"
+                                placeholder="Add a note..."
+                                value={newNote}
+                                onChange={(e) => setNewNote(e.target.value)}
+                            />
+                            <button className="add" onClick={handleAddNote}>+</button>
+                        </div>
+                    </div>
 
-            {/* Internal Notes */}
-            <div style={{ marginTop: '20px', border: '1px solid #ccc', padding: '10px' }}>
-                <h2>Internal Notes</h2>
-                {customer.internalNotes.map((note, index) => (
-                    <p key={index} style={{ backgroundColor: note.content.includes("inquire") ? '#FFCDD2' : 'transparent' }}>
-                        {note.date} {note.operator}: {note.content}
-                    </p>
-                ))}
-                <input
-                    type="text"
-                    placeholder="Add a note..."
-                    style={{ width: '300px', marginRight: '10px' }}
-                    value={newNote}
-                    onChange={(e) => setNewNote(e.target.value)}
-                />
-                <button onClick={handleAddNote}>ADD</button>
-            </div>
+                    {/* Payment History */}
+                    <div className="section">
+                        <h2>Payment History - 2 of 3 Invoices are Unpaid, Current Balance ${customer.balance.toFixed(2)}</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Spray Date</th>
+                                    <th>Invoice #</th>
+                                    <th>Amount</th>
+                                    <th>Payment Type</th>
+                                    <th>Payment Date</th>
+                                    <th>Balance</th>
+                                    <th>Age</th>
+                                    <th>Internal Notes</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {customer.paymentHistory.map((payment, index) => (
+                                    <tr key={index} className={payment.balance > 0 ? "unpaid" : "paid"}>
+                                        <td>{payment.date}</td>
+                                        <td>{payment.invoiceNumber}</td>
+                                        <td>${payment.amount.toFixed(2)}</td>
+                                        <td>{payment.paymentMethod}</td>
+                                        <td>{payment.paymentDate}</td>
+                                        <td>${payment.balance.toFixed(2)}</td>
+                                        <td>{payment.age}</td>
+                                        <td>Internal Notes</td>
+                                        <td>{payment.balance > 0 ? "UNPAID" : "PAID"}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
 
-            {/* Payment History */}
-            <div style={{ marginTop: '20px', border: '1px solid #ccc', padding: '10px' }}>
-                <h2>Payment History - Current Age and Balance is ${customer.balance.toFixed(2)}</h2>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead>
-                        <tr>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Date</th>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Spray #</th>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Amount</th>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Payment Method</th>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Payment Date</th>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Amount Due</th>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Current Age</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {customer.paymentHistory.map((payment, index) => (
-                            <tr key={index} style={{ backgroundColor: payment.amountDue > 0 ? '#FFCDD2' : 'transparent' }}>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{payment.date}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{payment.sprayNumber}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>${payment.amount.toFixed(2)}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{payment.paymentMethod}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{payment.paymentDate}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>${payment.amountDue.toFixed(2)}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{payment.currentAge}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                    {/* Credit Card */}
+                    <div className="section">
+                        <h2>Customer Credit Card</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Use</th>
+                                    <th>Date Added</th>
+                                    <th>Name on Card</th>
+                                    <th>Credit Card Number</th>
+                                    <th>Expiration</th>
+                                    <th>CVV Code</th>
+                                    <th>Zip Code</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {customer.creditCards.map((card, index) => (
+                                    <tr key={index}>
+                                        <td>
+                                            <input type="checkbox" checked={card.use} readOnly />
+                                        </td>
+                                        <td>{card.date}</td>
+                                        <td>{card.nameOnCard}</td>
+                                        <td>{card.cardNumber}</td>
+                                        <td>{card.expiry}</td>
+                                        <td>{card.cvv}</td>
+                                        <td>{card.zip}</td>
+                                        <td>
+                                            <button className="del" onClick={() => handleDeleteCreditCard(index)}>DEL</button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                <tr>
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            checked={newCreditCard.use}
+                                            onChange={(e) => setNewCreditCard({ ...newCreditCard, use: e.target.checked })}
+                                        />
+                                    </td>
+                                    <td>{new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}</td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            value={newCreditCard.nameOnCard}
+                                            onChange={(e) => setNewCreditCard({ ...newCreditCard, nameOnCard: e.target.value })}
+                                            placeholder="Name on Card"
+                                            style={{ width: '100px' }}
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            value={newCreditCard.cardNumber}
+                                            onChange={(e) => setNewCreditCard({ ...newCreditCard, cardNumber: e.target.value })}
+                                            placeholder="Card Number"
+                                            style={{ width: '100px' }}
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            value={newCreditCard.expiry}
+                                            onChange={(e) => setNewCreditCard({ ...newCreditCard, expiry: e.target.value })}
+                                            placeholder="MM/YY"
+                                            style={{ width: '50px' }}
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            value={newCreditCard.cvv}
+                                            onChange={(e) => setNewCreditCard({ ...newCreditCard, cvv: e.target.value })}
+                                            placeholder="CVV"
+                                            style={{ width: '50px' }}
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            value={newCreditCard.zip}
+                                            onChange={(e) => setNewCreditCard({ ...newCreditCard, zip: e.target.value })}
+                                            placeholder="Zip"
+                                            style={{ width: '50px' }}
+                                        />
+                                    </td>
+                                    <td>
+                                        <button className="add" onClick={handleAddCreditCard}>+</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-            {/* Credit Card */}
-            <div style={{ marginTop: '20px', border: '1px solid #ccc', padding: '10px' }}>
-                <h2>Credit Card</h2>
-                <p>Date: {customer.creditCard.date}</p>
-                <p>Name on Card: {customer.creditCard.nameOnCard}</p>
-                <p>Card Number: {customer.creditCard.cardNumber}</p>
-                <p>Expiry: {customer.creditCard.expiry}</p>
-                <p>CVV: {customer.creditCard.cvv}</p>
-                <p>Zip: {customer.creditCard.zip}</p>
-                <label>
-                    <input type="checkbox" checked={customer.creditCard.useDebit} readOnly />
-                    Use Debit
-                </label><br />
-                <button>UPDATE</button>
-            </div>
+                    {/* Operator Instructions */}
+                    <div className="section">
+                        <h2>Operator Instructions for This Address</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date Added</th>
+                                    <th>Instruction</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {customer.operatorInstructions.map((instruction, index) => (
+                                    <tr key={index}>
+                                        <td>{instruction.date}</td>
+                                        <td>{instruction.content}</td>
+                                        <td>
+                                            <button className="del" onClick={() => handleDeleteInstruction(index)}>DEL</button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                <tr>
+                                    <td>{new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}</td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            placeholder="Add an instruction..."
+                                            value={newInstruction}
+                                            onChange={(e) => setNewInstruction(e.target.value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    </td>
+                                    <td>
+                                        <button className="add" onClick={handleAddInstruction}>+</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-            {/* Operator Instructions */}
-            <div style={{ marginTop: '20px', border: '1px solid #ccc', padding: '10px' }}>
-                <h2>Operator Instructions</h2>
-                {customer.operatorInstructions.map((instruction, index) => (
-                    <p key={index}>{instruction}</p>
-                ))}
-                <input
-                    type="text"
-                    placeholder="Add an instruction..."
-                    style={{ width: '300px', marginRight: '10px' }}
-                    value={newInstruction}
-                    onChange={(e) => setNewInstruction(e.target.value)}
-                />
-                <button onClick={handleAddInstruction}>ADD</button>
-            </div>
-
-            {/* Spray Log (Pesticide Usage) */}
-            <div style={{ marginTop: '20px', border: '1px solid #ccc', padding: '10px' }}>
-                <h2>Spray Log</h2>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead>
-                        <tr>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Date</th>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Time</th>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Operator</th>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Type</th>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Test</th>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Pesticide</th>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>EPA</th>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Precautionary</th>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Concentration</th>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Gallons</th>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Milliliters</th>
-                            <th style={{ border: '1px solid #ccc', padding: '5px' }}>Square Feet</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {customer.sprayLog.map((spray, index) => (
-                            <tr key={index}>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.date}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.time}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.operator}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.type}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.test}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.pesticide}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.epa}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.precautionary}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.concentration}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.gallons}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.milliliters}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '5px' }}>{spray.squareFeet}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                    {/* Spray Log */}
+                    <div className="section">
+                        <h2>Spray Log - Supervisor Darren Bonaventura S-6583</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Operator(s)</th>
+                                    <th>Type</th>
+                                    <th>Pest</th>
+                                    <th>Pesticide</th>
+                                    <th>EPA</th>
+                                    <th>Precautionary</th>
+                                    <th>Conc</th>
+                                    <th>Gal</th>
+                                    <th>ML</th>
+                                    <th>Sq Ft</th>
+                                    <th>Info</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {customer.sprayLog.map((spray, index) => (
+                                    <tr key={index}>
+                                        <td>{spray.year}</td>
+                                        <td>{spray.date}</td>
+                                        <td>{spray.time}</td>
+                                        <td>{spray.operator}</td>
+                                        <td>{spray.type}</td>
+                                        <td>{spray.pest}</td>
+                                        <td>{spray.pesticide}</td>
+                                        <td>{spray.epa}</td>
+                                        <td>{spray.precautionary}</td>
+                                        <td>{spray.concentration}%</td>
+                                        <td>{spray.gallons}</td>
+                                        <td>{spray.milliliters}</td>
+                                        <td>{spray.squareFeet}</td>
+                                        <td><a href="#">MORE</a></td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div className="sidebar">
+                    <h2>Scheduled Start Date</h2>
+                    <p>{customer.startDate}</p>
+                    <h2>Contract</h2>
+                    <button className="view-contract">VIEW CONTRACT</button>
+                </div>
             </div>
         </div>
     );
