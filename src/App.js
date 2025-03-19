@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 
 function App() {
     // Mock data for now (we'll connect to the backend later)
-    const customer = {
+    const [customer, setCustomer] = useState({
         name: "Joe Smith",
         status: "INACTIVE",
         address: "1234 East Main Street, Greenwich, CT 06830",
@@ -65,6 +65,37 @@ function App() {
             }
         ],
         startDate: "09/24/2024"
+    });
+
+    const [newNote, setNewNote] = useState('');
+    const [newInstruction, setNewInstruction] = useState('');
+
+    const handleAddNote = () => {
+        if (newNote.trim()) {
+            const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            setCustomer({
+                ...customer,
+                internalNotes: [
+                    ...customer.internalNotes,
+                    { date: today, operator: "Current User", content: newNote }
+                ]
+            });
+            setNewNote('');
+        }
+    };
+
+    const handleAddInstruction = () => {
+        if (newInstruction.trim()) {
+            const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            setCustomer({
+                ...customer,
+                operatorInstructions: [
+                    ...customer.operatorInstructions,
+                    `${today}: ${newInstruction}`
+                ]
+            });
+            setNewInstruction('');
+        }
     };
 
     return (
@@ -157,8 +188,14 @@ function App() {
                         {note.date} {note.operator}: {note.content}
                     </p>
                 ))}
-                <input type="text" placeholder="Add a note..." style={{ width: '300px', marginRight: '10px' }} />
-                <button>ADD</button>
+                <input
+                    type="text"
+                    placeholder="Add a note..."
+                    style={{ width: '300px', marginRight: '10px' }}
+                    value={newNote}
+                    onChange={(e) => setNewNote(e.target.value)}
+                />
+                <button onClick={handleAddNote}>ADD</button>
             </div>
 
             {/* Payment History */}
@@ -214,8 +251,14 @@ function App() {
                 {customer.operatorInstructions.map((instruction, index) => (
                     <p key={index}>{instruction}</p>
                 ))}
-                <input type="text" placeholder="Add an instruction..." style={{ width: '300px', marginRight: '10px' }} />
-                <button>ADD</button>
+                <input
+                    type="text"
+                    placeholder="Add an instruction..."
+                    style={{ width: '300px', marginRight: '10px' }}
+                    value={newInstruction}
+                    onChange={(e) => setNewInstruction(e.target.value)}
+                />
+                <button onClick={handleAddInstruction}>ADD</button>
             </div>
 
             {/* Spray Log (Pesticide Usage) */}
