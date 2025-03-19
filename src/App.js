@@ -96,29 +96,29 @@ function App() {
     };
 
     const handleInputChange = (field, value) => {
-        setEditedCustomer({ ...editedCustomer, [field]: value });
+        setEditedCustomer(prev => ({ ...prev, [field]: value }));
     };
 
     const handleAdditionalInfoChange = (field, value) => {
-        setEditedCustomer({
-            ...editedCustomer,
+        setEditedCustomer(prev => ({
+            ...prev,
             additionalInfo: {
-                ...editedCustomer.additionalInfo,
+                ...prev.additionalInfo,
                 [field]: value
             }
-        });
+        }));
     };
 
     const handleRatingChange = (field, value) => {
         const numValue = parseFloat(value);
         if (numValue >= 0 && numValue <= 5) {
-            setEditedCustomer({
-                ...editedCustomer,
+            setEditedCustomer(prev => ({
+                ...prev,
                 ratings: {
-                    ...editedCustomer.ratings,
+                    ...prev.ratings,
                     [field]: numValue
                 }
-            });
+            }));
         }
     };
 
@@ -132,7 +132,7 @@ function App() {
         if (cleanedValue.length > 5) {
             cleanedValue = cleanedValue.slice(0, 5);
         }
-        setNewCreditCard({ ...newCreditCard, expiry: cleanedValue });
+        setNewCreditCard(prev => ({ ...prev, expiry: cleanedValue }));
     };
 
     const handleAddNote = () => {
@@ -140,13 +140,13 @@ function App() {
             const today = new Date();
             const date = today.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
             const time = today.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-            setCustomer({
-                ...customer,
+            setCustomer(prev => ({
+                ...prev,
                 internalNotes: [
-                    ...customer.internalNotes,
+                    ...prev.internalNotes,
                     { date, time, operator: "Current User", collection: newNote.toLowerCase().includes("inquire"), content: newNote }
                 ]
-            });
+            }));
             setNewNote('');
         }
     };
@@ -154,13 +154,13 @@ function App() {
     const handleAddInstruction = () => {
         if (newInstruction.trim()) {
             const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
-            setCustomer({
-                ...customer,
+            setCustomer(prev => ({
+                ...prev,
                 operatorInstructions: [
-                    ...customer.operatorInstructions,
+                    ...prev.operatorInstructions,
                     { date: today, content: newInstruction }
                 ]
-            });
+            }));
             setNewInstruction('');
         }
     };
@@ -168,13 +168,13 @@ function App() {
     const handleAddCreditCard = () => {
         if (newCreditCard.nameOnCard && newCreditCard.cardNumber) {
             const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
-            setCustomer({
-                ...customer,
+            setCustomer(prev => ({
+                ...prev,
                 creditCards: [
-                    ...customer.creditCards,
+                    ...prev.creditCards,
                     { ...newCreditCard, date: today }
                 ]
-            });
+            }));
             setNewCreditCard({
                 use: false,
                 date: "",
@@ -188,17 +188,17 @@ function App() {
     };
 
     const handleDeleteCreditCard = (index) => {
-        setCustomer({
-            ...customer,
-            creditCards: customer.creditCards.filter((_, i) => i !== index)
-        });
+        setCustomer(prev => ({
+            ...prev,
+            creditCards: prev.creditCards.filter((_, i) => i !== index)
+        }));
     };
 
     const handleDeleteInstruction = (index) => {
-        setCustomer({
-            ...customer,
-            operatorInstructions: customer.operatorInstructions.filter((_, i) => i !== index)
-        });
+        setCustomer(prev => ({
+            ...prev,
+            operatorInstructions: prev.operatorInstructions.filter((_, i) => i !== index)
+        }));
     };
 
     return (
